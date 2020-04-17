@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,11 +26,11 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication()
-                .withUser("a")
+                .withUser("李沙沙")
                 .password("$2a$10$ZDBer5ECIkRIQzFi0ywupOPuHw8yyk0sGt48O4xHEAl0HuhoNIe9m")
                 .roles("admin")
                 .and()
-                .withUser("b")
+                .withUser("郑沛鑫")
                 .password("$2a$10$ZDBer5ECIkRIQzFi0ywupOPuHw8yyk0sGt48O4xHEAl0HuhoNIe9m")
                 .roles("user");
     }
@@ -37,9 +38,18 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
+                // 如果有允许匿名的url，填在下面
+                .antMatchers("/druid/submitLogin**", "/actuator**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().permitAll();
+        // 关闭CSRF跨域
+        http.csrf().disable();
+    }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/css/**", "/js/**", "/druid/**", "/actuator/**" ,"/druid/submitLogin**");
     }
 }
 

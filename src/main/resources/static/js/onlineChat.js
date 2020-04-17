@@ -17,6 +17,7 @@ function connect() {
 }
 
 function sendMsg() {
+    $('#chatsContent').append('<div>' +"本机"+ ':' + $('#content').val()+ '</div>')
     stompClient.send("/app/chat", {}, JSON.stringify(
         {
             'content': $('#content').val(),
